@@ -1,0 +1,24 @@
+{% load bootstrap5 %}
+{% load socialaccount %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/57b5b9b539.js" crossorigin="anonymous"></script>
+  {% bootstrap_css %}
+  <title>PJT07</title>
+</head>
+<body>
+  {% include "nav.html" %}
+  <div class="container mt-3">
+    {% block content %}
+
+    {% endblock %}
+  </div>
+  {% bootstrap_javascript %}
+</body>
+</html>

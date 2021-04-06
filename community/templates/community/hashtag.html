@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <h2><span class="fw-bold">{{ hashtag.content }}</span> tag</h2>
+    <p>{{ reviews|length }}개의 게시글</p>
+  </div>
+  
+  <hr>
+
+  <div>
+    {% for review in reviews %}
+      <h3>{{ review.pk }}번 게시글</h3>
+      <h3>게시글 제목: {{ review.title }}</h3>
+      <p>{{ review.like_users.all|length }}명이 좋아요를 눌렀습니다.</p>
+      <p>{{ review.comment_set.all|length }}개의 댓글</p>
+      <a href="{% url 'community:detail' review.pk %}">상세글로 바로 가기</a>
+      <hr>
+    {% endfor %}
+  </div>
+{% endblock %}

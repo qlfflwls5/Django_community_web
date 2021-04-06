@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'community:index' %}">Movies</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'community:index' %}">Reviews</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'community:create' %}">Create</a>
+        </li>
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:profile' request.user.pk %}">My Profile</a>
+          </li>
+        {% endif %}
+      </ul>
+      {% comment %} 로그인 폼 버튼 {% endcomment %}
+      {% if request.user.is_authenticated %}
+        <form action="{% url 'accounts:logout' %}" method="POST">
+          {% csrf_token %}
+          <button class="btn btn-outline-light me-3" type="submit">Logout</button>
+          {% comment %} <div class="profile-header-img">
+              <img class="img-circle" src="https://picsum.photos/200" />
+          </div> {% endcomment %}
+        </form>
+      {% else %}
+        <a href="{% url 'accounts:signup' %}"><button class="btn btn-outline-light me-2">SignUp</button></a>
+        <a href="{% url 'accounts:login' %}"><button class="btn btn-outline-light me-3">Login</button></a>
+      {% endif %}
+      
+    </div>
+  </div>
+</nav>
+
+

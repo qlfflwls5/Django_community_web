@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load bootstrap_pagination %}
+
+{% block content %}
+  <h1>INDEX PAGE</h1>
+  <div href="#" class="list-group list-group-flush border-bottom scrollarea">
+  <hr>
+  {% for review in page_obj %}
+    <div class="mb-2">
+      {% if review.user.image and review.user.image != '1' %}
+        <span><img src="{{ review.user.image.url }}" alt="article_image"></span>
+      {% endif %}
+      <b class="d-inline">작성자: <a href="{% url 'accounts:profile' review.user.pk %}">{{ review.user.username }}</a></b>
+    </div>
+    <a href="{% url 'community:detail' review.pk %}" class="mb-2">{{ review.title }}</a>
+    <p>{{ review.movie_title }}</p>
+    
+    <div>
+      <form action="{% url 'community:likes_index' review.pk %}" method="POST">
+        {% csrf_token %}
+        {% comment %} 만약 현재 유저가 좋아요를 누른 상태라면 {% endcomment %}
+        {% if request.user in review.like_users.all %}
+          <button class="btn btn-link">
+            <i class="fas fa-heart" style="color: crimson;"></i>
+          </button>
+        {% else %}
+        {% comment %} 좋아요를 누르지 않았다면 좋아요 {% endcomment %}
+          <button class="btn btn-link">
+            <i class="far fa-heart" style="color: black";></i>
+          </button>
+        {% endif %}
+      </form>
+      <span><b>{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</b></span>
+    </div>
+    
+    <a href="{% url 'community:detail' review.pk %}">[DETAIL]</a>
+    <hr>
+  {% endfor %}
+  </div>
+  
+  {% comment %} pagination {% endcomment %}
+  {% bootstrap_paginate page_obj %}
+
+{% endblock %}
