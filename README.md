@@ -36,9 +36,9 @@
 
   + 제공자(provider)를 선택
     + 소셜 로그인에 사용할 소셜
-  + https://django-allauth.readthedocs.io/en/latest/providers.html를 참고하여 각 제공자에서 OAUTH를 위한 API 등록 진행
+  + https://django-allauth.readthedocs.io/en/latest/providers.html 를 참고하여 각 제공자에서 OAUTH를 위한 API 등록 진행
   + 클라이언트 아이디, 비밀 키 선택 후 Sites에서 example.com을 추가하고 저장
-  + 제공자에 따라 다르지만, Google의 경우 Google Cloud Platform의 'API 및 서비스' 탭의 '사용자 인증 정보'에서 소셜 로그인을 위해 생성한 클라이언트 ID에 들어간 후 승인된 리디렉션 URI에 http://127.0.0.1:8000/accounts/google/login/callback/을 입력해줘야 한다.
+  + 제공자에 따라 다르지만, Google의 경우 Google Cloud Platform의 'API 및 서비스' 탭의 '사용자 인증 정보'에서 소셜 로그인을 위해 생성한 클라이언트 ID에 들어간 후 승인된 리디렉션 URI에 http://127.0.0.1:8000/accounts/google/login/callback/ 을 입력해줘야 한다.
     + 소셜 로그인 후 리디렉션 될 URL
 
 + 소셜 로그인 세팅 완료, 로그인 시 구글 계정에 등록된 닉네임으로 username이 설정된다.
