@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_safe, require_http_methods
 from .models import Review, Comment, Hashtag
 from .forms import ReviewForm, CommentForm
 from django.urls import resolve
 from django.core.paginator import Paginator
 
 
-# Create your views here.
+@require_safe
 def index(request):
     reviews = Review.objects.order_by('-pk')
 
@@ -22,7 +22,9 @@ def index(request):
     }
     return render(request, 'community/index.html', context)
 
+
 @login_required
+@require_http_methods(['GET', 'POST'])
 def create(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST, request.FILES)
@@ -47,7 +49,8 @@ def create(request):
     }
     return render(request, 'community/create.html', context)
 
-# @login_required - 왜 로그인? - 주엽
+
+@require_safe
 def detail(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     comments = review.comment_set.order_by('-pk')
@@ -58,6 +61,7 @@ def detail(request, review_pk):
         'comments': comments
     }
     return render(request, 'community/detail.html', context)
+
 
 @require_POST
 def comments_create(request, review_pk):
@@ -100,6 +104,8 @@ def likes(request, review_pk):
         return redirect('community:detail', review.pk)
     return redirect('accounts:login')
 
+
+@require_POST
 def likes_index(request, review_pk):
     if request.user.is_authenticated:
         review = get_object_or_404(Review, pk=review_pk)
