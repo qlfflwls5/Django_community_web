@@ -2,6 +2,7 @@
 {% load bootstrap5 %}
 {% comment %} 해쉬태그 링크를 만들기 위한 커스텀 템플릿 태그(필터가 들어있는) 로드 {% endcomment %}
 {% load make_link %}
+{% load humanize %}
 
 {% block content %}
   <h1>DETAIL PAGE</h1>
@@ -17,14 +18,11 @@
   {% comment %} safe를 설정하지 않으면 해당 링크가 문자열 그대로 표현된다. {% endcomment %}
   <p>리뷰: {{ review|hashtag_link|safe }}</p>
   {% comment %} <p>{{ review.rank }}</p> {% endcomment %}
-  <p>작성 시간: {{ review.created_at }}</p>
-  <p>수정 시간: {{ review.updated_at }}</p>
-  <hr>
-  
+  <p>작성 시간: {{ review.created_at|naturalday }}</p>
+  <p>수정 시간: {{ review.updated_at|naturaltime }}</p>
   <div>
     <form action="{% url 'community:likes' review.pk %}" method="POST">
       {% csrf_token %}
-      <h4>좋아요를 누르면 메인 페이지로 되돌아갑니다.</h4>
        {% comment %} 만약 현재 유저가 좋아요를 누른 상태라면 {% endcomment %}
       {% if request.user in review.like_users.all %}
         <button class="btn btn-link">
@@ -39,22 +37,42 @@
     </form>
     <span><b>{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</b></span>
   </div>
-
-<hr>
+  <br>
+  {% if request.user == review.user %}
+    <button class="btn btn-primary btn-sm"><a href="{% url 'community:update' review.pk %}" class="text-light text-decoration-none">UPDATE</a></button>
+    {% comment %} <a href="{% url 'community:update' review.pk %}" class="btn btn-primary btn-sm d-inline">UPDATE</a> {% endcomment %}
+    <form action="{% url 'community:delete' review.pk %}" method="POST" class="d-inline">
+      {% csrf_token %}
+      <button class="btn btn-danger btn-sm">DELETE</button>
+    </form>
+  {% endif %}
+  <hr>
   <h4>댓글 목록</h4>
   <p>{{ comments|length }}개의 댓글이 있습니다.</p>
   <ul>
     {% for comment in comments %}
-      <li>{{ comment.content }}</li>
+      <li>
+        {{ comment.user }} - {{ comment.content }}
+        {% if request.user == comment.user %}
+          <form action="{% url 'community:comments_delete' review.pk comment.pk %}" method="POST" class="d-inline">
+            {% csrf_token %}
+            <input type="submit" value="DELETE" class="ms-1 btn btn-outline-secondary btn-sm">
+          </form>
+        {% endif %}
+      </li>
     {% empty %}
       <p>아직 댓글이 없네요...</p>
     {% endfor %}
   </ul>
   <hr>
-  <form action="{% url 'community:comments_create' review.pk %}" method="POST">
-    {% csrf_token %}
-    {% bootstrap_form comment_form %}
-    <input type="submit">
-  </form>
+  {% if request.user.is_authenticated %}
+    <form action="{% url 'community:comments_create' review.pk %}" method="POST">
+      {% csrf_token %}
+      {% bootstrap_form comment_form %}
+      <input type="submit">
+    </form>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인 하세요.]</a>
+  {% endif %}
   <a href="{% url 'community:index' %}">BACK</a>
 {% endblock %}

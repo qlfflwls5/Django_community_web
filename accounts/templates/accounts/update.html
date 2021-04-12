@@ -2,7 +2,7 @@
 {% load bootstrap5 %}
 
 {% block content %}
-  <h1>CREATE</h1>
+  <h1>PROFILE CHANGE</h1>
   <hr>
   <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -10,5 +10,5 @@
     <input type="submit">
   </form>
   <hr>
-  <a href="{% url 'community:index' %}">BACK</a>
+  <a href="{% url 'community:index'  %}">BACK</a>
 {% endblock %}
