@@ -20,8 +20,9 @@ class Review(models.Model):
     rank = models.IntegerField()
     content = models.TextField()
     image = ProcessedImageField(
+        blank=True,
         upload_to='article_images/%Y/%m/%d/',
-        processors=[ResizeToFill(100,100)],
+        processors=[ResizeToFill(200,200)],
         format='JPEG',
         options={'quality': 100}
         )

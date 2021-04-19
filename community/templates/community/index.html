@@ -8,9 +8,9 @@
   {% for review in page_obj %}
     <div class="mb-2">
       {% if review.user.image and review.user.image != '1' %}
-        <span><img src="{{ review.user.image.url }}" alt="article_image"></span>
+        <span><img src="{{ review.user.image.url }}" alt="article_image" class="rounded-circle" style="width: 40px; height: 40px;"></span>
       {% endif %}
-      <b class="d-inline">작성자: <a href="{% url 'accounts:profile' review.user.pk %}">{{ review.user.username }}</a></b>
+      <b class="d-inline ms-2"><a href="{% url 'accounts:profile' review.user.pk %}" class="text-decoration-none text-dark">{{ review.user.username }}</a></b>
     </div>
     <a href="{% url 'community:detail' review.pk %}" class="mb-2">{{ review.title }}</a>
     <p>{{ review.movie_title }}</p>

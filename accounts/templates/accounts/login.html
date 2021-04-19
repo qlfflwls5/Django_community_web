@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load bootstrap5 %}
 {% load socialaccount %}
+{% load static %}
 
 
 {% block content %}
@@ -9,9 +10,9 @@
   <form action="" method="POST">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit">
+    <input type="submit" class="btn btn-primary mb-3" value="로그인">
   </form>
-  <a href="{% provider_login_url 'google' next="/community/" %}"><img src="https://user-images.githubusercontent.com/1531669/41761606-83b5bd42-762a-11e8-811a-b78fdf68bc04.png" alt="" style="width: 280px; height: 75px;"></a>
+  <a href="{% provider_login_url 'google' next="/community/" %}"><img src="{% static "social_login/google_login.png" %}" alt="google_login"></a>
   <hr>
   <a href="{% url 'community:index' %}">BACK</a>
 {% endblock %}
