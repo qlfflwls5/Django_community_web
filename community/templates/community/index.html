@@ -2,43 +2,46 @@
 {% load bootstrap_pagination %}
 
 {% block content %}
-  <h1>INDEX PAGE</h1>
-  <div href="#" class="list-group list-group-flush border-bottom scrollarea">
-  <hr>
-  {% for review in page_obj %}
-    <div class="mb-2">
-      {% if review.user.image and review.user.image != '1' %}
-        <span><img src="{{ review.user.image.url }}" alt="article_image" class="rounded-circle" style="width: 40px; height: 40px;"></span>
-      {% endif %}
-      <b class="d-inline ms-2"><a href="{% url 'accounts:profile' review.user.pk %}" class="text-decoration-none text-dark">{{ review.user.username }}</a></b>
+  {% for review in reviews %}
+    <div class="d-flex justify-content-center mt-5 mb-5">
+      <div class="card" style="width: 40rem;">
+        <div class="p-3 d-flex justify-content-between">
+          <div class="d-inline">
+            {% if review.user.image %}
+              <span><img src="{{ review.user.image.url }}" alt="article_image" class="rounded-circle" style="width: 30px; height: 30px;"></span>
+            {% endif %}
+            <b class="d-inline ms-2"><a href="{% url 'accounts:profile' review.user.pk %}" class="text-decoration-none text-dark">{{ review.user.username }}</a></b>
+          </div>
+          <i class="fas fa-ellipsis-h mt-2"></i>
+        </div>
+        <img src="{{ review.image.url }}" class="card-img-top" alt="...">
+        <div class="card-body pt-0">
+          <div class="mb-3">
+            <form action="{% url 'community:likes_index' review.pk %}" method="POST">
+              {% csrf_token %}
+              {% comment %} 만약 현재 유저가 좋아요를 누른 상태라면 {% endcomment %}
+              {% if request.user in review.like_users.all %}
+                <button class="btn btn-link">
+                  <i class="fas fa-heart" style="color: crimson;"></i>
+                </button>
+              {% else %}
+              {% comment %} 좋아요를 누르지 않았다면 좋아요 {% endcomment %}
+                <button class="btn btn-link ps-0 pb-0">
+                  <i class="far fa-heart" style="color: black";></i>
+                </button>
+              {% endif %}
+            </form>
+            <span>{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</span>
+          </div>
+          <a href="{% url 'community:detail' review.pk %}" class="h5 text-decoration-none text-dark">{{ review.title }}</a>
+          <p class="mt-2">{{ review.movie_title }}</p>
+          <a href="{% url 'community:detail' review.pk %}" class="text-decoration-none text-secondary">더보기</a>
+        </div>
+      </div>
     </div>
-    <a href="{% url 'community:detail' review.pk %}" class="mb-2">{{ review.title }}</a>
-    <p>{{ review.movie_title }}</p>
-    
-    <div>
-      <form action="{% url 'community:likes_index' review.pk %}" method="POST">
-        {% csrf_token %}
-        {% comment %} 만약 현재 유저가 좋아요를 누른 상태라면 {% endcomment %}
-        {% if request.user in review.like_users.all %}
-          <button class="btn btn-link">
-            <i class="fas fa-heart" style="color: crimson;"></i>
-          </button>
-        {% else %}
-        {% comment %} 좋아요를 누르지 않았다면 좋아요 {% endcomment %}
-          <button class="btn btn-link">
-            <i class="far fa-heart" style="color: black";></i>
-          </button>
-        {% endif %}
-      </form>
-      <span><b>{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</b></span>
-    </div>
-    
-    <a href="{% url 'community:detail' review.pk %}">[DETAIL]</a>
-    <hr>
   {% endfor %}
-  </div>
-  
+
   {% comment %} pagination {% endcomment %}
-  {% bootstrap_paginate page_obj %}
+  {% comment %} {% bootstrap_paginate page_obj %} {% endcomment %}
 
 {% endblock %}

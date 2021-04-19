@@ -79,7 +79,7 @@ def update(request, pk):
     review = get_object_or_404(Review, pk=pk)
     if request.user == review.user:
         if request.method == 'POST':
-            form = ReviewForm(request.POST, instance=review)
+            form = ReviewForm(request.POST, request.FILES, instance=review)
             if form.is_valid():
                 form.save()
                 #1. 해당 review에 달려있는 모든 hashtag clear

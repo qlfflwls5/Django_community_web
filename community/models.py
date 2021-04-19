@@ -22,7 +22,7 @@ class Review(models.Model):
     image = ProcessedImageField(
         blank=True,
         upload_to='article_images/%Y/%m/%d/',
-        processors=[ResizeToFill(200,200)],
+        processors=[ResizeToFill(500,500)],
         format='JPEG',
         options={'quality': 100}
         )
