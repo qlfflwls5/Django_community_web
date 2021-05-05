@@ -68,6 +68,30 @@
 
 ![image-20210420024858998](README.assets/image-20210420024858998.png)
 
-+ ps
-  + 1주일에 3회 커밋을 목표로 하였지만 알고리즘 수업에 모든 시간을 쏟아부을 수 밖에 없었다...
-  + 곧 다시 웹을 배우므로 더 열심히 커밋하도록 하자
+<br/>
+
+### 2021-05-06 추가
+
++ REST API를 위한 세팅 및 2가지 API 생성
+
++ 세팅
+
+  + ```
+    pip isntall djangorestframework
+    ```
+
+  + `community/serializers.py` 작성
+
++ 2가지 API 추가
+
+  + 전체 영화 정보
+
+    #### GET    /api/v1/reviews
+
+  + 단일 영화 정보
+
+    #### GET    /api/v1/reviews/{review_id}
+
++ 결과 예) 단일 영화 정보
+
+![review_detail](README.assets/review_detail.jpg)
