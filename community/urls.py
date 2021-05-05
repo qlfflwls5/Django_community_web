@@ -14,4 +14,7 @@ urlpatterns = [
     path('<int:review_pk>/likes/', views.likes, name='likes'),
     path('<int:review_pk>/likes_index/', views.likes_index, name='likes_index'),
     path('<int:hash_pk>/hashtag/', views.hashtag, name='hashtah'),
+    # REST API
+    path('reviews/', views.review_list),
+    path('reviews/<int:review_pk>/', views.review_detail),
 ]

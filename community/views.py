@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_safe, require_http_methods
 from .models import Review, Comment, Hashtag
 from .forms import ReviewForm, CommentForm
 from django.urls import resolve
 from django.core.paginator import Paginator
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import ReviewListSerializer, ReviewSerializer
 
 
 @require_safe
@@ -178,3 +183,20 @@ def hashtag(reqeust, hash_pk):
         'reviews': reviews,
     }
     return render(reqeust, 'community/hashtag.html', context)
+
+
+# REST API
+# 전체 리뷰
+@api_view(['GET'])
+def review_list(request):
+    reviews = get_list_or_404(Review)
+    serializer = ReviewListSerializer(reviews, many=True)
+    return Response(serializer.data)
+
+
+# 단일 리뷰
+@api_view(['GET'])
+def review_detail(reqeust, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    serializer = ReviewSerializer(review)
+    return Response(serializer.data)
