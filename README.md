@@ -1,10 +1,6 @@
 ## 📘 Django_community_web 프로젝트
 
-+ SSAFY(삼성 청년 SW 아카데미)과정에서 학습한 django, HTML, CSS를 활용한 community 웹 페이지 제작 개인 프로젝트다.
-
-  +  `Django_project02_Like&Follow&Additional features`  프로젝트를 이어받아 진행한다.
-+ 3월~4월 한 달여 배운 내용을 통해 진행하는 개인 프로젝트로, 완성도가 높지 않다 하더라도 이것저것 기능들을 구현해 볼 생각이다.
-+ javascript를 아직 배우지 않아 다이나믹한 웹 페이지를 만들 수는 없지만, 가능한 웹 페이지에 다양한 기능들을 넣고 꾸며보겠다!
++ SSAFY(삼성 청년 SW 아카데미)과정에서 학습한 django, HTML, CSS, Ajax, Vue.js를 활용한 community 웹 페이지 제작 개인 프로젝트다.
 
 + 목표는 주 최소 3회 커밋!
   + 나의 감성이 들어간 웹 페이지를 제작해보자!
@@ -17,22 +13,59 @@
 
 ##### 웹 구동 방법 (git bash 사용)
 
-+ `python -m venv venv `- 가상환경 설치
-+ `source venv/Script/activate`  - 가상환경 구동
-+ `pip install -r requirements` - 필요한 모듈과 라이브러리 설치(requirements.txt안에 리스트 존재)
-+ `python manage.py migrate` - 주어진 마이그레이션들에 따라 DB에 테이블 생성
-+ `python manage.py runserver` - 서버 켜기
-  + 터미널에 나오는 로컬 주소 `http://127.0.0.1:8000/`를 ctrl + 클릭
-  + `http://127.0.0.1:8000/community` 메인 페이지 URL
++ 가상환경 설치
+
+```
+python -m venv venv  
+```
+
++  가상환경 구동
+
+```
+source venv/Script/activate
+```
+
++ 필요한 모듈 및 라이브러리 설치 (requirements.txt안에 리스트 존재)
+
+```
+pip install -r requirements
+```
+
++ 마이그레이션 (DB에 테이블 생성)
+
+```
+python manage.py migrate
+```
+
++ 서버 구동
+
+```
+python manage.py runserver
+```
+
++ 메인 페이지 URL
+
+```
+http://127.0.0.1:8000/community 
+```
 
 <br/>
 
 ##### 소셜 로그인을 위한 세팅 (서버 입장에서)
 
-+ admin 계정 생성 후 admin 페이지로 입장
++ admin 계정 생성
 
-  + `python manage.py createsuperuser`로 어드민 계정 생성 가능
-  + `http://127.0.0.1:8000/admin` 어드민 페이지 URL
+
+```
+python manage.py createsuperuser
+```
+
++ admin 페이지 입장
+
+```
+http://127.0.0.1:8000/admin
+```
+
 + 소셜 계정 탭 소셜 어플리케이션에서 소셜 어플리케이션 추가 선택
 
   + 제공자(provider)를 선택
@@ -95,3 +128,21 @@
 + 결과 예) 단일 영화 정보
 
 ![review_detail](README.assets/review_detail.jpg)
+
+<br/>
+
+### 2021-05-09 추가
+
++ REST API 추가
+
+  + 전체 해쉬태그 정보
+
+    #### GET    /api/v1/hashtags
+
++ Like & Follow 기능 Ajax 방식으로 재구현
+  + 기존의 좋아요, 팔로우 기능은 django만을 활용해 변경사항이 생길 때마다 페이지가 새로고침되었다.
+  + 이를 Ajax를 활용해 재구성하여 페이지가 새로고침되지 않고도 기능이 구현되도록 하였다.
+    + 이제 페이지가 새로고침되지 않기 때문에 좋아요나 팔로우를 누를 때마다 페이지 최상단으로 이동하지 않는다.
+  + 사용자 경험상 편의가 향상되었다.
++ README 수정
+  + 가독성을 높이고 필요없는 내용을 제거
