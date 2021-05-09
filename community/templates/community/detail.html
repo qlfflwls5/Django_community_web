@@ -21,21 +21,21 @@
   <p>작성 시간: {{ review.created_at|naturalday }}</p>
   <p>수정 시간: {{ review.updated_at|naturaltime }}</p>
   <div>
-    <form action="{% url 'community:likes' review.pk %}" method="POST">
+    <form class="like-form" data-review-id="{{ review.pk }}">
       {% csrf_token %}
        {% comment %} 만약 현재 유저가 좋아요를 누른 상태라면 {% endcomment %}
       {% if request.user in review.like_users.all %}
-        <button class="btn btn-link">
+        <button id="like-btn-{{ review.pk }}" class="btn btn-link">
           <i class="fas fa-heart" style="color: crimson;"></i>
         </button>
       {% else %}
        {% comment %} 좋아요를 누르지 않았다면 좋아요 {% endcomment %}
-        <button class="btn btn-link">
+        <button id="like-btn-{{ review.pk }}" class="btn btn-link">
           <i class="far fa-heart" style="color: black";></i>
         </button>
       {% endif %}
     </form>
-    <span><b>{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</b></span>
+    <span id="like-count-status-{{ review.pk }}">{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</span>
   </div>
   <br>
   {% if request.user == review.user %}
@@ -75,4 +75,39 @@
     <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인 하세요.]</a>
   {% endif %}
   <a href="{% url 'community:index' %}">BACK</a>
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const likeForms = document.querySelectorAll('.like-form')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    likeForms.forEach(function (likeform) {
+      likeform.addEventListener('submit', function (event) {
+        event.preventDefault()
+        const reviewId = event.target.dataset.reviewId
+        axios({
+          method: 'post',
+          url: `http://127.0.0.1:8000/community/${reviewId}/like/`,
+          headers: {
+            'X-CSRFToken': csrftoken
+          }
+        })
+        .then(function (response) {
+          const { liked, likeCount } = response.data
+
+          const likeBtn = document.querySelector(`#like-btn-${reviewId}`)
+          const likeCountStatus = document.querySelector(`#like-count-status-${reviewId}`)
+          likeBtn.innerHTML = liked ? '<i class="fas fa-heart fa-lg" style="color:crimson;"></i>' : '<i class="far fa-heart fa-lg" style="color:black;"></i>'
+          likeCountStatus.innerText = `${likeCount} 명이 이 글을 좋아합니다.`
+        })
+        .catch(function (err) {
+          if (err.response.status === 401) {
+            window.location.href = 'http://127.0.0.1:8000/accounts/login/'
+          }
+        })
+      })
+    })
+    
+  </script>
 {% endblock %}

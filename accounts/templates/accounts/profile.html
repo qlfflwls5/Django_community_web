@@ -15,10 +15,10 @@
         <div class="d-flex align-items-center justify-content-center">
           <h2 class="d-inline me-3">{{ person.username }}</h2>
           {% if person != request.user %}
-            <form action="{% url 'accounts:follow' person.pk %}" method="POST" class="d-inline">
+            <form id="follow-form" data-person-id="{{ person.pk }}">
               {% csrf_token %}
               {% if request.user in followers %}
-                <button class="btn btn-primary btn-sm">언팔로우</button>
+                <button class="btn btn-secondary btn-sm">언팔로우</button>
               {% else %}
                 <button class="btn btn-primary btn-sm">팔로우</button>
               {% endif %}
@@ -34,10 +34,51 @@
       </div>
       <div>
         <p class="d-inline me-4">게시물 {{ person.review_set.all|length }}</p>
-        <p class="d-inline me-4">팔로워 {{ followers|length }}</p>
-        <p class="d-inline">팔로우 {{ followings|length }}</p>
+        <p id="follower-count-status" class="d-inline me-4">팔로워 {{ followers|length }}</p>
+        <p id="following-count-status" class="d-inline">팔로우 {{ followings|length }}</p>
       </div>
     {% endwith %}
   </div>
   <hr>
 {% endblock content %}
+
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const followForm = document.querySelector('#follow-form')
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+  // 좋아요 구현과 같은 로직
+  followForm.addEventListener('submit', function (event) {
+    event.preventDefault()
+    const personId = event.target.dataset.personId
+
+    axios({
+      method: 'post',
+      url: `http://127.0.0.1:8000/accounts/${personId}/follow/`,
+      headers: {
+        'X-CSRFToken': csrftoken
+      }
+    })
+    .then(function (response) {
+      const { following, followerCount, followingCount } = response.data
+
+      const followerCountStatus = document.querySelector('#follower-count-status')
+      const followingCountStatus = document.querySelector('#following-count-status')
+      const followBtn = document.querySelector('#follow-form > button')
+
+      followerCountStatus.innerText = `팔로워 ${followerCount}`
+      followingCountStatus.innerText = `팔로잉 ${followingCount}`
+	    // 팔로우 여부에 따라 버튼의 색상과 문구 선택
+      if (following) {
+        followBtn.classList.remove('btn-primary')
+        followBtn.classList.add('btn-secondary')
+        followBtn.innerText = '언팔로우'
+      } else {
+        followBtn.classList.remove('btn-secondary')
+        followBtn.classList.add('btn-primary')
+        followBtn.innerText = '팔로우'
+      }
+    })
+  })
+</script>
+{% endblock %}

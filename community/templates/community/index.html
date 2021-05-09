@@ -17,21 +17,21 @@
         <img src="{{ review.image.url }}" class="card-img-top" alt="...">
         <div class="card-body pt-0">
           <div class="mb-3">
-            <form action="{% url 'community:likes_index' review.pk %}" method="POST">
+            <form class="like-form" data-review-id="{{ review.pk }}">
               {% csrf_token %}
               {% comment %} 만약 현재 유저가 좋아요를 누른 상태라면 {% endcomment %}
               {% if request.user in review.like_users.all %}
-                <button class="btn btn-link">
+                <button id="like-btn-{{ review.pk }}" class="btn btn-link">
                   <i class="fas fa-heart" style="color: crimson;"></i>
                 </button>
               {% else %}
               {% comment %} 좋아요를 누르지 않았다면 좋아요 {% endcomment %}
-                <button class="btn btn-link ps-0 pb-0">
+                <button id="like-btn-{{ review.pk }}" class="btn btn-link ps-0 pb-0">
                   <i class="far fa-heart" style="color: black";></i>
                 </button>
               {% endif %}
             </form>
-            <span>{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</span>
+            <span id="like-count-status-{{ review.pk }}">{{ review.like_users.all|length }}명이 이 글을 좋아합니다.</span>
           </div>
           <a href="{% url 'community:detail' review.pk %}" class="h5 text-decoration-none text-dark">{{ review.title }}</a>
           <p class="mt-2">{{ review.movie_title }}</p>
@@ -39,9 +39,47 @@
         </div>
       </div>
     </div>
+
+
   {% endfor %}
+{% endblock %}
 
-  {% comment %} pagination {% endcomment %}
-  {% comment %} {% bootstrap_paginate page_obj %} {% endcomment %}
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const likeForms = document.querySelectorAll('.like-form')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+	  // forEach를 통해 각각의 폼에 대한 작업을 처리
+    likeForms.forEach(function (likeform) {
+      likeform.addEventListener('submit', function (event) {
+        // form의 submit 이벤트 기본 동작을 중단시켜 페이지가 새로고침되지 않도록 함
+        event.preventDefault()
+        const reviewId = event.target.dataset.reviewId
+        axios({
+          method: 'post',
+          url: `http://127.0.0.1:8000/community/${reviewId}/like/`,
+          headers: {
+            'X-CSRFToken': csrftoken
+          }
+        })
+        .then(function (response) {
+          // 요청으로 인해 실행된 views.py의 like함수에서 처리 결과로 반환한 JSON 데이터를 구조 분해 할당을 통해 변수에 저장
+          const { liked, likeCount } = response.data
 
+          const likeBtn = document.querySelector(`#like-btn-${reviewId}`)
+          const likeCountStatus = document.querySelector(`#like-count-status-${reviewId}`)
+		      // 좋아요를 누른 상태에 따라 다른 하트 아이콘을 표시
+          likeBtn.innerHTML = liked ? '<i class="fas fa-heart fa-lg" style="color:crimson;"></i>' : '<i class="far fa-heart fa-lg" style="color:black;"></i>'
+          likeCountStatus.innerText = `${likeCount} 명이 이 글을 좋아합니다.`
+        })
+        // 비로그인 상태로 401에러가 발생한다면 로그인 페이지로 이동
+        .catch(function (err) {
+          if (err.response.status === 401) {
+            window.location.href = 'http://127.0.0.1:8000/accounts/login/'
+          }
+        })
+      })
+    })
+    
+  </script>
 {% endblock %}

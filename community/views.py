@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ReviewListSerializer, ReviewSerializer, HashtagListSerializer
 
+from django.http.response import JsonResponse, HttpResponse
+
 
 @require_safe
 def index(request):
@@ -137,41 +139,22 @@ def comments_delete(request, review_pk, comment_pk):
 
 
 @require_POST
-def likes(request, review_pk):
+def like(request, review_pk):
     if request.user.is_authenticated:
         review = get_object_or_404(Review, pk=review_pk)
-        # 이 게시글에 좋아요를 눌렀었다면
+        user = request.user
         if review.like_users.filter(pk=request.user.pk).exists():
-            # 좋아요 취소
-            review.like_users.remove(request.user)
+            review.like_users.remove(user)
+            liked = False
         else:
-            # 좋아요
-            review.like_users.add(request.user)
-        # current_url = resolve(request.path_info).url_name
-        # return redirect(current_url)
-        
-        #print(request.resolver_match.url_name)
-        
-        # if request.resolver_match.url_name == 'community:index':
-        #     return redirect('community:index')
-        # else:
-        return redirect('community:detail', review.pk)
-    return redirect('accounts:login')
-
-
-@require_POST
-def likes_index(request, review_pk):
-    if request.user.is_authenticated:
-        review = get_object_or_404(Review, pk=review_pk)
-        # 이 게시글에 좋아요를 눌렀었다면
-        if review.like_users.filter(pk=request.user.pk).exists():
-            # 좋아요 취소
-            review.like_users.remove(request.user)
-        else:
-            # 좋아요
-            review.like_users.add(request.user)
-        return redirect('community:index')
-    return redirect('accounts:login')
+            review.like_users.add(user)
+            liked = True
+        like_status = {
+            'liked': liked,
+            'likeCount': review.like_users.count()
+        }
+        return JsonResponse(like_status)
+    return HttpResponse(status=401)
 
 
 @login_required
