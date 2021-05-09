@@ -26,7 +26,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class HashtagListSerializer(serializers.ModelSerializer):
-    
+    reviews_count = serializers.IntegerField(source='reviews.count', read_only=True)
     class Meta:
-        model = Comment
-        fields = ('id', 'content', )
+        model = Hashtag
+        fields = ('id', 'content', 'reviews', 'reviews_count', )

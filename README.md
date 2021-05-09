@@ -84,11 +84,11 @@
 
 + 2가지 API 추가
 
-  + 전체 영화 정보
+  + 전체 리뷰 정보
 
     #### GET    /api/v1/reviews
 
-  + 단일 영화 정보
+  + 단일 리뷰 정보
 
     #### GET    /api/v1/reviews/{review_id}
 

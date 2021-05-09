@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import ReviewListSerializer, ReviewSerializer
+from .serializers import ReviewListSerializer, ReviewSerializer, HashtagListSerializer
 
 
 @require_safe
@@ -199,4 +199,12 @@ def review_list(request):
 def review_detail(reqeust, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     serializer = ReviewSerializer(review)
+    return Response(serializer.data)
+
+
+# 전체 해쉬태그
+@api_view(['GET'])
+def hashtag_list(request):
+    hashtags = get_list_or_404(Hashtag)
+    serializer = HashtagListSerializer(hashtags, many=True)
     return Response(serializer.data)
