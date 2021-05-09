@@ -109,11 +109,12 @@ http://127.0.0.1:8000/admin
 
 + 세팅
 
-  + ```
-    pip isntall djangorestframework
-    ```
 
-  + `community/serializers.py` 작성
+```
+pip isntall djangorestframework
+```
+
++ `community/serializers.py` 작성
 
 + 2가지 API 추가
 
