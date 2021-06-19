@@ -9,6 +9,8 @@
           <div class="w-50 h-50">
             {% if person.image %}
               <img src="{{ person.image.url }}" alt="person_image" class="mb-3 rounded-circle w-25 h-25" >
+            {% else %}
+              <img src="../../media/profile_images/2021/05/23/default_profile.jpg" alt="person_image" class="mb-3 rounded-circle w-25 h-25" >
             {% endif %}
           </div>
         </div>
